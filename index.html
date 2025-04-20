@@ -1,0 +1,72 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jokes</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Currency Converter</h2>
+        
+        <input type="number" id="amount" placeholder="Enter amount" value="1">
+        
+        <select id="baseCurr">
+            <option value="USD">USD - US Dollar</option>
+            <option value="EUR">EUR - Euro</option>
+            <option value="INR">INR - Indian Rupee</option>
+            <option value="GBP">GBP - British Pound</option>
+            <option value="JPY">JPY - Japanese Yen</option>
+        </select>
+
+        <select id="tarCurr">
+            <option value="INR">INR - Indian Rupee</option>
+            <option value="USD">USD - US Dollar</option>
+            <option value="EUR">EUR - Euro</option>
+            <option value="GBP">GBP - British Pound</option>
+            <option value="JPY">JPY - Japanese Yen</option>
+        </select>
+
+        <button onclick="ConvertCurr()">Convert</button>
+
+        <p id="result">Converted Amount: -</p>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html> -->
+
+
+async function fetchWeather() {
+    const city = document.getElementById("city").value;
+    if (!city) {
+        alert("Pls Enter a city")
+        return;
+    }
+
+    try {
+        const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&format=json`);
+        const geoData = await geoResponse.json();
+
+        if (!geoData.results|| geoData.results.length === 0) {
+            alert("City not found")
+        }
+        
+        const {latitude,longitude} = geoData.results[0];
+
+        const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+        const weatherData = await weatherResponse.json();
+
+        // Display the weather
+
+        const {temperature,windspeed,weathercode} = weatherData.current_weather;
+
+        document.getElementById("weatherResult").innerHTML = `
+        🌍 City: ${city} <br>
+            🌡️ Temperature: ${temperature}°C <br>
+            💨 Wind Speed: ${windspeed} km/h <br>
+            ⛅ Weather Code: ${weathercode}`;
+    } catch (error) {
+        console.error("Failed to fetch weather data");
+        alert("Failed to load the weather data");
+    }
+}
